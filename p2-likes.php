@@ -9,11 +9,11 @@ Author URI: http://scottbasgaard.com/
 License: GPL2
 */
 
-/*  
+/*
 Copyright 2012  Scott Basgaard  (email : mail@scottbasgaard.com)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as 
+it under the terms of the GNU General Public License, version 2, as
 published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -30,7 +30,7 @@ define( 'P2LIKES_URL', plugin_dir_url( __FILE__ ) );
 define( 'P2LIKES_DIR', plugin_dir_path( __FILE__ ) );
 
 function p2_likes_init() {
-	
+
 	// For 3.4
 	// if ( function_exists( 'wp_get_theme' ) ) {
 	// 	$current_theme = wp_get_theme();
@@ -39,18 +39,17 @@ function p2_likes_init() {
 	// 	if ( $theme_name == "P2" || $theme_parent == "P2" ) {
 	// 	}
 	// }
-	
+
 	if ( is_user_logged_in() ) {
 		add_action( 'p2_action_links', 'p2_likes_action_links' );
 		add_filter( 'comment_reply_link', 'p2_likes_comment_reply_link', 99, 4 );
 		add_action( 'wp_enqueue_scripts', 'p2_likes_enqueue_scripts' );
 		add_action( 'wp_print_styles', 'p2_likes_enqueue_styles' );
-		add_action( 'wp_head', 'p2_likes_head' );
 	}
-	
+
 	// L10n
 	load_plugin_textdomain( 'p2-likes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-		
+
 }
 add_action( 'plugins_loaded', 'p2_likes_init' );
 
@@ -77,21 +76,18 @@ function p2_likes_comment_reply_link( $link, $args, $comment, $post ) {
 }
 
 function p2_likes_enqueue_scripts() {
-	$translation_array = array(
+	$p2_likes_data = array(
+		'ajaxURL' => admin_url( 'admin-ajax.php' ),
 		'unlike' => __( 'Unlike', 'p2-likes' ),
-		'like'   => __( 'Like', 'p2-likes' ),
+		'like'   => __( 'Like', 'p2-likes' )
 	);
 
 	wp_enqueue_script( 'p2-likes', P2LIKES_URL . '/js/p2-likes.js', array('jquery') );
-	wp_localize_script( 'p2-likes', 'p2_likes', $translation_array );
+	wp_localize_script( 'p2-likes', 'p2_likes', $p2_likes_data );
 }
 
 function p2_likes_enqueue_styles() {
 	wp_enqueue_style( 'p2-likes', P2LIKES_URL . '/css/p2-likes.css' );
-}
-
-function p2_likes_head() {
-	echo '<script type="text/javascript">var p2LikesURL = "'.get_bloginfo('wpurl').'"</script>'."\n";
 }
 
 function p2_likes_generate_users_html($users) {
