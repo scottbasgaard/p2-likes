@@ -64,8 +64,6 @@ function p2_likes_action_links() {
 }
 
 function p2_likes_comment_reply_link( $link, $args, $comment, $post ) {
-	global $post;
-	global $comment;
 	global $current_user;
 	$commentmeta = get_comment_meta( $comment->comment_ID, '_p2_likes', true );
 	$users = p2_likes_generate_users_html($commentmeta);
