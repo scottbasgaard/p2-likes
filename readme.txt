@@ -2,9 +2,9 @@
 Contributors: scottbasgaard
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MFZXL72ETR7H2
 Tags: p2, likes
-Requires at least: 3.0
-Tested up to: 3.3.2
-Stable tag: 1.0.4
+Requires at least: 3.8
+Tested up to: 3.8.1
+Stable tag: 1.0.5
 
 "P2 Likes" is a way to give positive feedback on threads you care about on P2.
 
@@ -38,6 +38,10 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 
 == Changelog ==
 
+= 1.0.5 =
+* Define AJAX URL using admin_url( 'admin-ajax.php' ); (props Mamaduka)
+* Various code cleanup (props Mamaduka)
+
 = 1.0.4 =
 * Bug Fix: Added missing load_plugin_textdomain() (props Zé Fontainhas)
 * Bug Fix: Added support for Gravatar hovercards (props Zé Fontainhas)
@@ -57,6 +61,10 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+* Define AJAX URL using admin_url( 'admin-ajax.php' ); (props Mamaduka)
+* Various code cleanup (props Mamaduka)
 
 = 1.0.4 =
 * Bug Fix: Added missing load_plugin_textdomain() (props Zé Fontainhas)
