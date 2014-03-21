@@ -153,6 +153,8 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
 		$instance['number'] = (int) $new_instance['number'];
 
+		delete_transient( 'p2_likes_most_liked_items' );
+
 		return $instance;
 	}
 
