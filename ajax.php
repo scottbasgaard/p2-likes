@@ -47,6 +47,9 @@ function p2_likes_process_post( $user_id, $id ) {
 		update_post_meta( $id, '_p2_likes', array($user_id) );
 		update_post_meta( $id, '_p2_likes_total', 1 );
 	}
+	
+	// Clear Widget Cache
+	delete_transient( 'p2_likes_most_liked_items' );
 }
 
 function p2_likes_process_comment( $user_id, $id ) {
@@ -61,4 +64,7 @@ function p2_likes_process_comment( $user_id, $id ) {
 		update_comment_meta( $id, '_p2_likes', array($user_id) );
 		update_comment_meta( $id, '_p2_likes_total', 1 );
 	}
+	
+	// Clear Widget Cache
+	delete_transient( 'p2_likes_most_liked_items' );
 }

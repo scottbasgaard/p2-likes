@@ -31,47 +31,51 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
 		
-		$most_liked_items = array();
-		$meta_key		= '_p2_likes_total';
+		// Cache Results
+		if ( false === ( $most_liked_items = get_transient( 'p2_likes_most_liked_items' ) ) ) {
 		
-		// Get P2 Likes Posts
-		$posts = $wpdb->get_results("
-			SELECT      *
-			FROM        $wpdb->postmeta as posts
-			WHERE       posts.meta_key = '_p2_likes_total'
-			ORDER BY    meta_value ASC
-			LIMIT 10
-		");
+			$most_liked_items = array();
+			$meta_key		= '_p2_likes_total';
 		
-		foreach ( $posts as $post ) {
-			$most_liked_items[] = array(
-				'type' => 'post',
-				'id' => $post->post_id,
-				'count' => $post->meta_value
-			);
+			// Get P2 Likes Posts
+			$posts = $wpdb->get_results("
+				SELECT      *
+				FROM        $wpdb->postmeta as posts
+				WHERE       posts.meta_key = '_p2_likes_total'
+				ORDER BY    meta_value ASC
+			");
+		
+			foreach ( $posts as $post ) {
+				$most_liked_items[] = array(
+					'type' => 'post',
+					'id' => $post->post_id,
+					'count' => $post->meta_value
+				);
+			}
+		
+			// Get P2 Likes Comments
+			$comments = $wpdb->get_results("
+				SELECT      *
+				FROM        $wpdb->commentmeta as comments
+				WHERE       comments.meta_key = '_p2_likes_total'
+				ORDER BY    meta_value ASC
+			");
+		
+			foreach ( $comments as $comment ) {
+				$most_liked_items[] = array(
+					'type' => 'comment',
+					'id' => $comment->comment_id,
+					'count' => $comment->meta_value
+				);
+			}
+		
+			// Sort Posts / Comments by Total Likes
+			usort( $most_liked_items, function( $a, $b ) {
+			    return $b['count'] - $a['count'];
+			});
+			
+			set_transient( 'p2_likes_most_liked_items', $most_liked_items, 60*60*12 );
 		}
-		
-		// Get P2 Likes Comments
-		$comments = $wpdb->get_results("
-			SELECT      *
-			FROM        $wpdb->commentmeta as comments
-			WHERE       comments.meta_key = '_p2_likes_total'
-			ORDER BY    meta_value ASC
-			LIMIT 10
-		");
-		
-		foreach ( $comments as $comment ) {
-			$most_liked_items[] = array(
-				'type' => 'comment',
-				'id' => $comment->comment_id,
-				'count' => $comment->meta_value
-			);
-		}
-		
-		// Sort Posts / Comments by Total Likes
-		usort( $most_liked_items, function( $a, $b ) {
-		    return $b['count'] - $a['count'];
-		});
 		
 		?>
 		
