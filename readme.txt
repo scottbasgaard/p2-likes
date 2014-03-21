@@ -5,12 +5,18 @@ Tags: p2, likes
 Requires at least: 3.8
 Tested up to: 3.8.1
 Stable tag: 1.0.7
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 "P2 Likes" is a way to give positive feedback on threads you care about on P2.
 
 == Description ==
 
 P2 Likes brings Facebook-like functionality to your P2 site. Your users can now show interest in threads by clicking the like button.
+
+= Get involved =
+
+Contribute to the P2 Likes source code on the [GitHub](https://github.com/scottbasgaard/p2-likes).
 
 == Installation ==
 
@@ -19,6 +25,10 @@ P2 Likes brings Facebook-like functionality to your P2 site. Your users can now 
 5. You're all set. Now start showing some interest!
 
 == Frequently Asked Questions ==
+
+= How can I contribute? =
+
+I'd love to merge your pull requests. You can fork P2 Likes on [GitHub here](https://github.com/scottbasgaard/p2-likes).
 
 = Does this work with any other themes? =
 
