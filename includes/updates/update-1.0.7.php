@@ -5,7 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Update Posts
 $posts_args = array(
 	'post_type' => 'post',
-	'meta_key' => '_p2_likes'
+	'meta_key' => '_p2_likes',
+	'posts_per_page' => '-1'
 );
 $posts_query = new WP_Query( $posts_args );
 
