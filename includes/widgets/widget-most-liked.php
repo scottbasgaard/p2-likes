@@ -24,8 +24,14 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
+		
 		global $wpdb;
+		
 		$title = apply_filters( 'widget_title', $instance['title'] );
+		
+		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
+		if ( ! $number )
+			$number = 5;
 
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
@@ -74,6 +80,9 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			    return $b['count'] - $a['count'];
 			});
 			
+			// Limit Results
+			$most_liked_items = array_slice( $most_liked_items, 0, $number );
+			
 			set_transient( 'p2_likes_most_liked_items', $most_liked_items, 60*60*12 );
 		}
 		
@@ -86,7 +95,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 				if ( $item['type'] == 'post' ) { ?>
 					
 					<li>
-						<a href="<?php echo get_the_permalink( $item['id'] ); ?>" class="thepermalink" title="<?php esc_attr_e( 'Permalink', 'p2' ); ?>"><?php echo get_the_title( $item['id'] ); ?></a>
+						<a href="<?php echo get_the_permalink( $item['id'] ); ?>" class="thepermalink" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $item['id'] ); ?></a>
 					</li>
 					
 					
@@ -94,7 +103,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					
 					$comment = get_comment( $item['id'] ); ?>
 					<li>
-						<a class="thepermalink" href="<?php echo esc_url( get_comment_link($comment) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
+						<a class="thepermalink" href="<?php echo esc_url( get_comment_link($comment) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
 					</li>
 					
 				<?php }
@@ -116,17 +125,16 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		if ( isset( $instance[ 'title' ] ) ) {
-			$title = $instance[ 'title' ];
-		}
-		else {
-			$title = __( 'Most Liked', 'p2-likes' );
-		}
+		$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Most Liked', 'p2-likes' );
+		$number = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
 		?>
-		<p>
-		<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'p2-likes' ); ?></label> 
-		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
-		</p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'p2-likes' ); ?></label> 
+		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>"></p>
+		
+		<p><label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of items to show:', 'p2-likes' ); ?></label>
+		<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
+		
 		<?php 
 	}
 
@@ -143,6 +151,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
+		$instance['number'] = (int) $new_instance['number'];
 
 		return $instance;
 	}
