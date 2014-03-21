@@ -41,6 +41,7 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 = 1.0.7 =
 * Added '_p2_likes_total' meta
 * New Feature: Most Liked Widget
+* Added AJAX nonce and other cleanup (props Daniel Bachhuber)
 
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
@@ -72,6 +73,7 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 = 1.0.7 =
 * Added '_p2_likes_total' meta
 * New Feature: Most Liked Widget
+* Added AJAX nonce and other cleanup (props Daniel Bachhuber)
 
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
