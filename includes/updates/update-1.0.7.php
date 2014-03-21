@@ -32,10 +32,10 @@ $args = array(
 $comments_query = new WP_Comment_Query;
 $comments = $comments_query->query( $args );
  
-if( $comments ) {
+if ( $comments ) {
 	
 	// Add New 'Likes Total' Meta
-	foreach( $comments as $comment ) {
+	foreach ( $comments as $comment ) {
 		if ( $likes = get_comment_meta( $comment->comment_ID, '_p2_likes', true ) ) {
 			update_comment_meta( $id, '_p2_likes_total', count($likes) );
 		}

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: p2, likes
 Requires at least: 3.8
 Tested up to: 3.8.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 "P2 Likes" is a way to give positive feedback on threads you care about on P2.
 
@@ -38,6 +38,10 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 
 == Changelog ==
 
+= 1.0.7 =
+* Added '_p2_likes_total' meta
+* New Feature: Most Liked Widget
+
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
 
@@ -64,6 +68,10 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+* Added '_p2_likes_total' meta
+* New Feature: Most Liked Widget
 
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
