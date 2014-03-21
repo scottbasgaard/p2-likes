@@ -105,4 +105,6 @@ function p2_likes_generate_users_html($users) {
 	return $output;
 }
 
-require_once( P2LIKES_DIR . '/ajax.php' );
+if ( is_admin() && defined('DOING_AJAX') && DOING_AJAX ) {
+	require_once( P2LIKES_DIR . '/ajax.php' );
+}
