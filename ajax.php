@@ -40,8 +40,10 @@ function p2_likes_process_post( $user_id, $id ) {
 		else
 			$likes[] = $user_id;
 		update_post_meta( $id, '_p2_likes', $likes );
+		update_post_meta( $id, '_p2_likes_total', count($likes) );
 	} else {
 		update_post_meta( $id, '_p2_likes', array($user_id) );
+		update_post_meta( $id, '_p2_likes_total', 1 );
 	}
 }
 
@@ -52,7 +54,9 @@ function p2_likes_process_comment( $user_id, $id ) {
 		else
 			$likes[] = $user_id;
 		update_comment_meta( $id, '_p2_likes', $likes );
+		update_comment_meta( $id, '_p2_likes_total', count($likes) );
 	} else {
 		update_comment_meta( $id, '_p2_likes', array($user_id) );
+		update_comment_meta( $id, '_p2_likes_total', 1 );
 	}
 }

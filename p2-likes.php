@@ -28,8 +28,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 define( 'P2LIKES_URL', plugin_dir_url( __FILE__ ) );
 define( 'P2LIKES_DIR', plugin_dir_path( __FILE__ ) );
+define( 'P2LIKES_VERSION', '1.0.7' );
 
 function p2_likes_init() {
+
+	// Updates
+	add_action( 'admin_init', 'p2_likes_update' );
 
 	// For 3.4
 	// if ( function_exists( 'wp_get_theme' ) ) {
@@ -49,9 +53,20 @@ function p2_likes_init() {
 
 	// L10n
 	load_plugin_textdomain( 'p2-likes', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	
+	// Add Widgets
+	add_action( 'widgets_init', 'p2_likes_include_widgets' );
 
 }
 add_action( 'plugins_loaded', 'p2_likes_init' );
+
+function p2_likes_update() {
+	$current_db_version = get_option( 'p2_likes_db_version' );
+	if ( version_compare( $current_db_version, '1.0.8', '<' ) ) {
+		include( 'includes/updates/update-1.0.7.php' );
+		update_option( 'p2_likes_db_version', '1.0.7' );
+	}
+}
 
 function p2_likes_action_links() {
 	global $post;
@@ -103,6 +118,10 @@ function p2_likes_generate_users_html($users) {
 		$output = trim(ob_get_clean());
 	endif;
 	return $output;
+}
+
+function p2_likes_include_widgets() {
+	include_once( 'includes/widgets/widget-most-liked.php' );
 }
 
 if ( is_admin() && defined('DOING_AJAX') && DOING_AJAX ) {
