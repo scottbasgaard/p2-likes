@@ -3,6 +3,8 @@
 function p2_likes_like_check() {
 
 	global $current_user;
+	
+	check_ajax_referer( 'p2_likes_nonce', 'security' );
 
 	if ( isset($_POST['type']) && isset($_POST['id']))  :
 		

@@ -93,6 +93,7 @@ function p2_likes_comment_reply_link( $link, $args, $comment, $post ) {
 function p2_likes_enqueue_scripts() {
 	$p2_likes_data = array(
 		'ajaxURL' => admin_url( 'admin-ajax.php' ),
+		'ajax_nonce' => wp_create_nonce('p2_likes_nonce'),
 		'unlike' => __( 'Unlike', 'p2-likes' ),
 		'like'   => __( 'Like', 'p2-likes' )
 	);

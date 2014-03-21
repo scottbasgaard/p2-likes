@@ -3,7 +3,7 @@ function p2Likes( type, id) {
 	if ( id != '' ) {
 
 		jQuery.post( p2_likes.ajaxURL,
-			{ action: 'p2_likes_like', type: type, id: id },
+			{ action: 'p2_likes_like', type: type, id: id, security: p2_likes.ajax_nonce },
 			function(data) {
 
 				var parsedJSON = jQuery.parseJSON(data);
