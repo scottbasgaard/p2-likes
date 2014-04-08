@@ -22,7 +22,7 @@ Contribute to the P2 Likes source code on the [GitHub](https://github.com/scottb
 
 1. Install P2 Likes either via the WordPress.org plugin directory, or by uploading the files to your server.
 2. After activating P2 Likes, you will see the Like/Unlike links in your P2 threads.
-5. You're all set. Now start showing some interest!
+3. You're all set. Now start showing some interest!
 
 == Frequently Asked Questions ==
 
