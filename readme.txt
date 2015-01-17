@@ -6,7 +6,7 @@ Requires at least: 4.1
 Tested up to: 4.1
 Stable tag: 1.0.7
 
-"P2 Likes" is a way to give positive feedback on threads you care about on P2.
+Give positive feedback on threads you care about on P2
 
 == Description ==
 
