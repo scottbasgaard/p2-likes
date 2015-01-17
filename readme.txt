@@ -2,9 +2,9 @@
 Contributors: scottbasgaard
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MFZXL72ETR7H2
 Tags: p2, likes
-Requires at least: 3.8
-Tested up to: 3.8.1
-Stable tag: 1.0.6
+Requires at least: 4.1
+Tested up to: 4.1
+Stable tag: 1.0.7
 
 "P2 Likes" is a way to give positive feedback on threads you care about on P2.
 
@@ -38,6 +38,9 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 
 == Changelog ==
 
+= 1.0.7 =
+* Update readme.txt
+
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
 
@@ -64,6 +67,9 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+* Update readme.txt
 
 = 1.0.6 =
 * Load ajax.php only when needed (props Mamaduka)
