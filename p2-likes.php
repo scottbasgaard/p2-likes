@@ -2,11 +2,11 @@
 /*
 Plugin Name: P2 Likes
 Plugin URI: http://scottbasgaard.com/
-Description: "P2 Likes" is a way to give positive feedback on threads you care about on P2.
-Version: 1.0.6
+Description: Give positive feedback on threads you care about on P2
+Version: 1.0.7
 Author: Scott Basgaard
 Author URI: http://scottbasgaard.com/
-License: GPL2
+License: GPL3 or later
 */
 
 /*
