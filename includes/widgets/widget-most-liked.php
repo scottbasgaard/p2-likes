@@ -44,8 +44,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 
 		// Define transient for period
-		$most_liked_transient_name = 'p2_likes_most_liked_items_transient_' . $days;
-
+		$most_liked_transient_name = 'p2_likes_most_liked_items_transient_' . $this->id . '_' . $days;
 		// Cache Results
 		if ( false === ( $most_liked_items = get_transient( $most_liked_transient_name ) ) ) {
 
