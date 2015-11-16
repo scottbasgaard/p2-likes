@@ -37,6 +37,8 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			if ( ! $days )
 				$days = 7;
 
+		$include_comments = ( ! empty( $instance['include_comments'] ) ) ? true : false;
+
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
@@ -79,20 +81,22 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 				);
 			}
 
-			// Get P2 Likes Comments
-			$comments = $wpdb->get_results("
-				SELECT      *
-				FROM        $wpdb->commentmeta as comments
-				WHERE       comments.meta_key = '_p2_likes_total'
-				ORDER BY    meta_value ASC
-			");
+			if ( $include_comments ) {
+				// Get P2 Likes Comments
+				$comments = $wpdb->get_results("
+					SELECT      *
+					FROM        $wpdb->commentmeta as comments
+					WHERE       comments.meta_key = '_p2_likes_total'
+					ORDER BY    meta_value ASC
+				");
 
-			foreach ( $comments as $comment ) {
-				$most_liked_items[] = array(
-					'type' => 'comment',
-					'id' => $comment->comment_id,
-					'count' => $comment->meta_value
-				);
+				foreach ( $comments as $comment ) {
+					$most_liked_items[] = array(
+						'type' => 'comment',
+						'id' => $comment->comment_id,
+						'count' => $comment->meta_value
+					);
+				}
 			}
 
 			// Sort Posts / Comments by Total Likes
@@ -160,6 +164,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Most Liked', 'p2-likes' );
 		$number = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
 		$days = isset( $instance['days'] ) ? absint( $instance['days'] ) : 7;
+		$include_comments = $instance['include_comments'];
 		?>
 
 		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'p2-likes' ); ?></label>
@@ -170,6 +175,9 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 
 		<p><label for="<?php echo $this->get_field_id( 'days' ); ?>"><?php _e( 'Number of days to consider (0 for all time):', 'p2-likes' ); ?></label>
 		<input id="<?php echo $this->get_field_id( 'days' ); ?>" name="<?php echo $this->get_field_name( 'days' ); ?>" type="text" value="<?php echo $days; ?>" size="3" /></p>
+
+		<p><label for="<?php echo $this->get_field_id( 'include_comments' ); ?>"><?php _e( 'Include comments:', 'p2-likes' ); ?></label>
+		<input id="<?php echo $this->get_field_id( 'include_comments' ); ?>" name="<?php echo $this->get_field_name( 'include_comments' ); ?>" class="checkbox" type="checkbox" <?php if ( $include_comments ) : echo 'checked="checked"'; endif; ?> /></p>
 
 		<?php
 	}
@@ -189,6 +197,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
 		$instance['number'] = (int) $new_instance['number'];
 		$instance['days'] = (int) $new_instance['days'];
+		$instance['include_comments'] = (boolean) $new_instance['include_comments'];
 
 		delete_transient( 'p2_likes_most_liked_items' );
 
