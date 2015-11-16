@@ -46,14 +46,11 @@ If you like my plugins feel free to donate [here](https://www.paypal.com/cgi-bin
 
 == Changelog ==
 
-<<<<<<< HEAD
 = 1.0.8 =
 * Added '_p2_likes_total' meta
 * New Feature: Most Liked Widget
 * Added AJAX nonce and other cleanup (props Daniel Bachhuber)
 
-=======
->>>>>>> scottbasgaard/master
 = 1.0.7 =
 * Update readme.txt
 
