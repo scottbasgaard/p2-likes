@@ -14,7 +14,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			'p2_likes_most_widget', // Base ID
 			__( 'P2 Most Liked', 'p2-likes' ), // Name
 			array(
-				'description' => __( 'Display your most items threads on P2', 'p2-likes' ),
+				'description' => __( 'Display your most liked P2 posts & comments', 'p2-likes' ),
 			)
 		);
 	}
