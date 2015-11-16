@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 class P2_Likes_Widget_Most_Liked extends WP_Widget {
 
@@ -10,8 +12,10 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	function __construct() {
 		parent::__construct(
 			'p2_likes_most_widget', // Base ID
-			__('P2 Most Liked', 'p2-likes'), // Name
-			array( 'description' => __( 'Display your most items threads on P2', 'p2-likes' ), ) // Args
+			__( 'P2 Most Liked', 'p2-likes' ), // Name
+			array(
+				'description' => __( 'Display your most items threads on P2', 'p2-likes' ),
+			)
 		);
 	}
 
@@ -30,70 +34,85 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
-		if ( ! $number )
+		if ( ! $number ) {
 			$number = 5;
+		}
 
 		$days = ( ! empty( $instance['days'] ) ) ? absint( $instance['days'] ) : 7;
-			if ( ! $days )
-				$days = 7;
+		if ( ! $days ) {
+			$days = 7;
+		}
 
 		$include_comments = ( ! empty( $instance['include_comments'] ) ) ? true : false;
 
 		echo $args['before_widget'];
-		if ( ! empty( $title ) )
+		if ( ! empty( $title ) ) {
 			echo $args['before_title'] . $title . $args['after_title'];
+		}
 
 		// Define transient for period
 		$most_liked_transient_name = 'p2_likes_most_liked_items_transient_' . $this->id . '_' . $days;
+
 		// Cache Results
 		if ( false === ( $most_liked_items = get_transient( $most_liked_transient_name ) ) ) {
 
 			$most_liked_items = array();
 			$meta_key		= '_p2_likes_total';
 
-			if ( $days != 0 ) {
-				// Get P2 Likes Posts
-				$posts = $wpdb->get_results("
+			if ( 0 !== $days ) {
+				$posts = $wpdb->get_results(
+					$wpdb->prepare( "
 					SELECT      *
 					FROM        $wpdb->postmeta, $wpdb->posts
 					WHERE       $wpdb->postmeta.meta_key = '_p2_likes_total'
 					AND					$wpdb->posts.ID = $wpdb->postmeta.post_id
-					AND DATEDIFF(NOW(), $wpdb->posts.post_date) < " . $days . "
+					AND DATEDIFF(NOW(), $wpdb->posts.post_date) <  %d
 					ORDER BY    meta_value ASC
-				");
-
+					", $days )
+				);
 			} else {
-				// Get P2 Likes Posts
-				$posts = $wpdb->get_results("
+				$posts = $wpdb->get_results( "
 					SELECT      *
 					FROM        $wpdb->postmeta as posts
 					WHERE       posts.meta_key = '_p2_likes_total'
 					ORDER BY    meta_value ASC
-				");
+				" );
 			}
 
 			foreach ( $posts as $post ) {
 				$most_liked_items[] = array(
 					'type' => 'post',
 					'id' => $post->post_id,
-					'count' => $post->meta_value
+					'count' => $post->meta_value,
 				);
 			}
 
 			if ( $include_comments ) {
-				// Get P2 Likes Comments
-				$comments = $wpdb->get_results("
-					SELECT      *
-					FROM        $wpdb->commentmeta as comments
-					WHERE       comments.meta_key = '_p2_likes_total'
-					ORDER BY    meta_value ASC
-				");
+				if ( 0 !== $days ) {
+					$comments = $wpdb->get_results(
+						$wpdb->prepare( "
+							SELECT      *
+							FROM        $wpdb->commentmeta, $wpdb->comments
+							WHERE       $wpdb->commentmeta.meta_key = '_p2_likes_total'
+							AND					$wpdb->commentmeta.comment_id = $wpdb->comments.comment_id
+							AND DATEDIFF(NOW(), $wpdb->comments.comment_date) <  %d
+							ORDER BY    meta_value ASC
+						", $days)
+					);
+				} else {
+					$comments = $wpdb->get_results("
+						SELECT      *
+						FROM        $wpdb->commentmeta as comments
+						WHERE       comments.meta_key = '_p2_likes_total'
+						ORDER BY    meta_value ASC
+					");
+				}
 
 				foreach ( $comments as $comment ) {
 					$most_liked_items[] = array(
 						'type' => 'comment',
 						'id' => $comment->comment_id,
-						'count' => $comment->meta_value
+						'count' => $comment->meta_value,
 					);
 				}
 			}
@@ -106,7 +125,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			// Limit Results
 			$most_liked_items = array_slice( $most_liked_items, 0, $number );
 
-			set_transient( $most_liked_transient_name, $most_liked_items, 60*30 );
+			set_transient( $most_liked_transient_name, $most_liked_items, 60 * 30 );
 		}
 
 		?>
@@ -115,12 +134,12 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 
 			<?php foreach ( $most_liked_items as $item ) {
 
-				if ( $item['type'] == 'post' ) { ?>
+				if ( 'post' === $item['type'] ) { ?>
 
 					<li>
 						<a href="<?php echo get_the_permalink( $item['id'] ); ?>" class="thepermalink" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $item['id'] ); ?></a>
 						(<?php echo $item['count'] . ' ';
-						if ( $item['count'] > 1 ){
+						if ( $item['count'] > 1 ) {
 							_e( 'likes', 'p2-likes' );
 						} else {
 							_e( 'like', 'p2-likes' );
@@ -128,13 +147,13 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					</li>
 
 
-				<?php } elseif ( $item['type'] == 'comment' ) {
+				<?php } elseif ( 'comment' === $item['type'] ) {
 
 					$comment = get_comment( $item['id'] ); ?>
 					<li>
-						Comment on <a class="thepermalink" href="<?php echo esc_url( get_comment_link($comment) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
+						Comment on <a class="thepermalink" href="<?php echo esc_url( get_comment_link( $comment ) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
 						(<?php echo $item['count'] . ' ';
-						if ( $item['count'] > 1 ){
+						if ( $item['count'] > 1 ) {
 							_e( 'likes', 'p2-likes' );
 						} else {
 							_e( 'like', 'p2-likes' );
@@ -142,7 +161,6 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					</li>
 
 				<?php }
-
 			} ?>
 
 		</ul>
@@ -202,7 +220,6 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 
 		return $instance;
 	}
-
 } // class P2_Likes_Widget_Most_Liked
 
 register_widget( 'P2_Likes_Widget_Most_Liked' );
