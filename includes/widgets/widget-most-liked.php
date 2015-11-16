@@ -33,17 +33,11 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
-		if ( ! $number ) {
-			$number = 5;
-		}
+		$number = ( isset( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
 
-		$days = ( ! empty( $instance['days'] ) ) ? absint( $instance['days'] ) : 7;
-		if ( ! $days ) {
-			$days = 7;
-		}
+		$days = ( isset( $instance['days'] ) ) ? absint( $instance['days'] ) : 7;
 
-		$include_comments = ( ! empty( $instance['include_comments'] ) ) ? true : false;
+		$include_comments = ( isset( $instance['include_comments'] ) ) ? true: false;
 
 		echo $args['before_widget'];
 		if ( ! empty( $title ) ) {
@@ -54,7 +48,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$most_liked_transient_name = 'p2_likes_most_liked_items_transient_' . $this->id . '_' . $days;
 
 		// Cache Results
-		if ( false === ( $most_liked_items = get_transient( $most_liked_transient_name ) ) ) {
+		// if ( false === ( $most_liked_items = get_transient( $most_liked_transient_name ) ) ) {
 
 			$most_liked_items = array();
 			$meta_key		= '_p2_likes_total';
@@ -126,7 +120,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 			$most_liked_items = array_slice( $most_liked_items, 0, $number );
 
 			set_transient( $most_liked_transient_name, $most_liked_items, 60 * 30 );
-		}
+		// }
 
 		?>
 
