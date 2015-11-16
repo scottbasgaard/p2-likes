@@ -65,7 +65,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					SELECT      *
 					FROM        $wpdb->postmeta, $wpdb->posts
 					WHERE       $wpdb->postmeta.meta_key = '_p2_likes_total'
-					AND					$wpdb->posts.ID = $wpdb->postmeta.post_id
+					AND         $wpdb->posts.ID = $wpdb->postmeta.post_id
 					AND DATEDIFF(NOW(), $wpdb->posts.post_date) <  %d
 					ORDER BY    meta_value ASC
 					", $days )
