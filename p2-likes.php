@@ -6,7 +6,7 @@ Description: "P2 Likes" is a way to give positive feedback on threads you care a
 Version: 1.0.7
 Author: Scott Basgaard
 Author URI: http://scottbasgaard.com/
-License: GPL2
+License: GPL3 or later
 */
 
 /*

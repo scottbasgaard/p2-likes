@@ -24,33 +24,53 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		
+
 		global $wpdb;
-		
+
 		$title = apply_filters( 'widget_title', $instance['title'] );
-		
+
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
 		if ( ! $number )
 			$number = 5;
 
+		$days = ( ! empty( $instance['days'] ) ) ? absint( $instance['days'] ) : 7;
+			if ( ! $days )
+				$days = 7;
+
 		echo $args['before_widget'];
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
-		
+
+		// Define transient for period
+		$most_liked_transient_name = 'p2_likes_most_liked_items_transient_' . $days;
+
 		// Cache Results
-		if ( false === ( $most_liked_items = get_transient( 'p2_likes_most_liked_items' ) ) ) {
-		
+		if ( false === ( $most_liked_items = get_transient( $most_liked_transient_name ) ) ) {
+
 			$most_liked_items = array();
 			$meta_key		= '_p2_likes_total';
-		
-			// Get P2 Likes Posts
-			$posts = $wpdb->get_results("
-				SELECT      *
-				FROM        $wpdb->postmeta as posts
-				WHERE       posts.meta_key = '_p2_likes_total'
-				ORDER BY    meta_value ASC
-			");
-		
+
+			if ( $days != 0 ) {
+				// Get P2 Likes Posts
+				$posts = $wpdb->get_results("
+					SELECT      *
+					FROM        $wpdb->postmeta, $wpdb->posts
+					WHERE       $wpdb->postmeta.meta_key = '_p2_likes_total'
+					AND					$wpdb->posts.ID = $wpdb->postmeta.post_id
+					AND DATEDIFF(NOW(), $wpdb->posts.post_date) < " . $days . "
+					ORDER BY    meta_value ASC
+				");
+
+			} else {
+				// Get P2 Likes Posts
+				$posts = $wpdb->get_results("
+					SELECT      *
+					FROM        $wpdb->postmeta as posts
+					WHERE       posts.meta_key = '_p2_likes_total'
+					ORDER BY    meta_value ASC
+				");
+			}
+
 			foreach ( $posts as $post ) {
 				$most_liked_items[] = array(
 					'type' => 'post',
@@ -58,7 +78,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					'count' => $post->meta_value
 				);
 			}
-		
+
 			// Get P2 Likes Comments
 			$comments = $wpdb->get_results("
 				SELECT      *
@@ -66,7 +86,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 				WHERE       comments.meta_key = '_p2_likes_total'
 				ORDER BY    meta_value ASC
 			");
-		
+
 			foreach ( $comments as $comment ) {
 				$most_liked_items[] = array(
 					'type' => 'comment',
@@ -74,46 +94,58 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 					'count' => $comment->meta_value
 				);
 			}
-		
+
 			// Sort Posts / Comments by Total Likes
 			usort( $most_liked_items, function( $a, $b ) {
 			    return $b['count'] - $a['count'];
 			});
-			
+
 			// Limit Results
 			$most_liked_items = array_slice( $most_liked_items, 0, $number );
-			
-			set_transient( 'p2_likes_most_liked_items', $most_liked_items, 60*60*12 );
+
+			set_transient( $most_liked_transient_name, $most_liked_items, 60*30 );
 		}
-		
+
 		?>
-		
+
 		<ul>
-			
+
 			<?php foreach ( $most_liked_items as $item ) {
-				
+
 				if ( $item['type'] == 'post' ) { ?>
-					
+
 					<li>
 						<a href="<?php echo get_the_permalink( $item['id'] ); ?>" class="thepermalink" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $item['id'] ); ?></a>
+						(<?php echo $item['count'] . ' ';
+						if ( $item['count'] > 1 ){
+							_e( 'likes', 'p2-likes' );
+						} else {
+							_e( 'like', 'p2-likes' );
+						} ?>)
 					</li>
-					
-					
+
+
 				<?php } elseif ( $item['type'] == 'comment' ) {
-					
+
 					$comment = get_comment( $item['id'] ); ?>
 					<li>
-						<a class="thepermalink" href="<?php echo esc_url( get_comment_link($comment) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
+						Comment on <a class="thepermalink" href="<?php echo esc_url( get_comment_link($comment) ); ?>" title="<?php esc_attr_e( 'Permalink', 'p2-likes' ); ?>"><?php echo get_the_title( $comment->comment_post_ID ); ?></a>
+						(<?php echo $item['count'] . ' ';
+						if ( $item['count'] > 1 ){
+							_e( 'likes', 'p2-likes' );
+						} else {
+							_e( 'like', 'p2-likes' );
+						} ?>)
 					</li>
-					
+
 				<?php }
-				
+
 			} ?>
-			
+
 		</ul>
-		
+
 		<?php
-	
+
 		echo $args['after_widget'];
 	}
 
@@ -127,15 +159,19 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 	public function form( $instance ) {
 		$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : __( 'Most Liked', 'p2-likes' );
 		$number = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
+		$days = isset( $instance['days'] ) ? absint( $instance['days'] ) : 7;
 		?>
-		
-		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'p2-likes' ); ?></label> 
+
+		<p><label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'p2-likes' ); ?></label>
 		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>"></p>
-		
+
 		<p><label for="<?php echo $this->get_field_id( 'number' ); ?>"><?php _e( 'Number of items to show:', 'p2-likes' ); ?></label>
 		<input id="<?php echo $this->get_field_id( 'number' ); ?>" name="<?php echo $this->get_field_name( 'number' ); ?>" type="text" value="<?php echo $number; ?>" size="3" /></p>
-		
-		<?php 
+
+		<p><label for="<?php echo $this->get_field_id( 'days' ); ?>"><?php _e( 'Number of days to consider (0 for all time):', 'p2-likes' ); ?></label>
+		<input id="<?php echo $this->get_field_id( 'days' ); ?>" name="<?php echo $this->get_field_name( 'days' ); ?>" type="text" value="<?php echo $days; ?>" size="3" /></p>
+
+		<?php
 	}
 
 	/**
@@ -152,6 +188,7 @@ class P2_Likes_Widget_Most_Liked extends WP_Widget {
 		$instance = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? sanitize_text_field( $new_instance['title'] ) : '';
 		$instance['number'] = (int) $new_instance['number'];
+		$instance['days'] = (int) $new_instance['days'];
 
 		delete_transient( 'p2_likes_most_liked_items' );
 
