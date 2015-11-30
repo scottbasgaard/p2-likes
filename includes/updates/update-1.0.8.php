@@ -11,14 +11,13 @@ $posts_args = array(
 $posts_query = new WP_Query( $posts_args );
 
 if ( $posts_query->have_posts() ) {
-	
 	// Add New 'Likes Total' Meta
-	while ( $posts_query->have_posts() ) { $posts_query->the_post();
-		if ( $likes = get_post_meta( $post->ID, '_p2_likes', true ) ) {
-			update_post_meta( $id, '_p2_likes_total', count($likes) );
+	while ( $posts_query->have_posts() ) {
+		$posts_query->the_post();
+		if ( $likes = get_post_meta( get_the_ID(), '_p2_likes', true ) ) {
+			update_post_meta( get_the_ID(), '_p2_likes_total', count($likes) );
 		}
 	}
-	
 }
 wp_reset_postdata();
 
@@ -32,14 +31,11 @@ $args = array(
 );
 $comments_query = new WP_Comment_Query;
 $comments = $comments_query->query( $args );
- 
+
 if ( $comments ) {
-	
-	// Add New 'Likes Total' Meta
 	foreach ( $comments as $comment ) {
 		if ( $likes = get_comment_meta( $comment->comment_ID, '_p2_likes', true ) ) {
-			update_comment_meta( $id, '_p2_likes_total', count($likes) );
+			update_comment_meta( $comment->comment_ID, '_p2_likes_total', count($likes) );
 		}
 	}
-	
 }

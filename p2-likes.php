@@ -3,10 +3,10 @@
 Plugin Name: P2 Likes
 Plugin URI: http://scottbasgaard.com/
 Description: "P2 Likes" is a way to give positive feedback on threads you care about on P2.
-Version: 1.0.7
+Version: 1.0.8
 Author: Scott Basgaard
 Author URI: http://scottbasgaard.com/
-License: GPL2
+License: GPL3 or later
 */
 
 /*
@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 define( 'P2LIKES_URL', plugin_dir_url( __FILE__ ) );
 define( 'P2LIKES_DIR', plugin_dir_path( __FILE__ ) );
-define( 'P2LIKES_VERSION', '1.0.7' );
+define( 'P2LIKES_VERSION', '1.0.8' );
 
 function p2_likes_init() {
 
@@ -62,11 +62,10 @@ add_action( 'plugins_loaded', 'p2_likes_init' );
 
 function p2_likes_update() {
 	$current_db_version = get_option( 'p2_likes_db_version' );
-
-	// 1.0.7 Update
-	if ( version_compare( $current_db_version, '1.0.7', '<' ) ) {
-		include( 'includes/updates/update-1.0.7.php' );
-		update_option( 'p2_likes_db_version', '1.0.7' );
+	// 1.0.8 Update
+	if ( version_compare( $current_db_version, '1.0.8', '<' ) ) {
+		include( 'includes/updates/update-1.0.8.php' );
+		update_option( 'p2_likes_db_version', '1.0.8' );
 	}
 }
 
